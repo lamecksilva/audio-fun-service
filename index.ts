@@ -18,7 +18,7 @@ app.use('/audios', router);
 let db: any;
 
 MongoClient.connect(
-	process.env.MONGO_URI || 'mongodb://localhost:27017/audio-fun-service',
+	process.env.MONGO_URI || 'mongodb://localhost:27017',
 	{ useUnifiedTopology: true, useNewUrlParser: true },
 	(err, database) => {
 		if (err) {
@@ -26,7 +26,7 @@ MongoClient.connect(
 			process.exit(1);
 		}
 
-		db = database.db('audio-fin-service');
+		db = database.db(process.env.DB_NAME || 'audio-fun-service');
 	}
 );
 
