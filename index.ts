@@ -16,6 +16,7 @@ let db: any;
 
 MongoClient.connect(
 	process.env.MONGO_URI || 'mongodb://localhost:27017/audio-fun-service',
+	{ useUnifiedTopology: true, useNewUrlParser: true },
 	(err, database) => {
 		if (err) {
 			console.error('MongoDB Connection Error');
@@ -88,17 +89,17 @@ router.post('/', (req: Request, res: Response) => {
 		});
 
 		uploadStream.on('finish', () => {
-			return res
-				.status(201)
-				.json({
-					message:
-						'File uploaded successfully, stored with Mongo ObjectID: ' + id,
-				});
+			return res.status(201).json({
+				message:
+					'File uploaded successfully, stored with Mongo ObjectID: ' + id,
+			});
 		});
 	});
 });
 
 const PORT = process.env.PORT || 9000;
+
+app.use('/audios', router);
 
 app.listen(PORT, () => {
 	console.log(`Audio Fun Service running on port ${PORT}`);
