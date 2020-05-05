@@ -11,6 +11,8 @@ const app = express();
 
 const router = Router();
 
+app.use('/audios', router);
+
 // Any because in line 23 its ok, but in 38 gives an error...
 // Types MongoClient (23) and Db (39) are diff :(
 let db: any;
@@ -23,7 +25,8 @@ MongoClient.connect(
 			console.error('MongoDB Connection Error');
 			process.exit(1);
 		}
-		db = database;
+
+		db = database.db('audio-fin-service');
 	}
 );
 
@@ -98,16 +101,14 @@ router.post('/', (req: Request, res: Response) => {
 	});
 });
 
-const PORT = process.env.PORT || 9000;
-
-app.use('/audios', router);
+app.use(json());
+app.use(urlencoded({ extended: true }));
 
 app.use(
 	morgan(':method :url :status :res[content-length] - :response-time ms')
 );
 
-app.use(json());
-app.use(urlencoded({ extended: true }));
+const PORT = process.env.PORT || 9000;
 
 app.listen(PORT, () => {
 	console.log(`Audio Fun Service running on port ${PORT}`);
