@@ -1,6 +1,7 @@
 require('dotenv').config();
-import express, { Router, Request, Response } from 'express';
+import express, { Router, Request, Response, json, urlencoded } from 'express';
 import multer, { memoryStorage } from 'multer';
+import morgan from 'morgan';
 
 import { MongoClient, ObjectID, GridFSBucket, Db } from 'mongodb';
 
@@ -57,7 +58,7 @@ router.post('/', (req: Request, res: Response) => {
 
 	const upload = multer({
 		storage,
-		limits: { fields: 1, fileSize: 6000000, files: 1, parts: 2 },
+		limits: { fields: 1, fileSize: 60000000, files: 1, parts: 2 },
 	});
 
 	upload.single('audio')(req, res, (err) => {
@@ -100,6 +101,13 @@ router.post('/', (req: Request, res: Response) => {
 const PORT = process.env.PORT || 9000;
 
 app.use('/audios', router);
+
+app.use(
+	morgan(':method :url :status :res[content-length] - :response-time ms')
+);
+
+app.use(json());
+app.use(urlencoded({ extended: true }));
 
 app.listen(PORT, () => {
 	console.log(`Audio Fun Service running on port ${PORT}`);
