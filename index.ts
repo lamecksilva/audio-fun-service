@@ -9,6 +9,10 @@ import { Readable } from 'stream';
 
 const app = express();
 
+app.use(
+	morgan(':method :url :status :res[content-length] - :response-time ms')
+);
+
 const router = Router();
 
 app.use('/audios', router);
@@ -103,10 +107,6 @@ router.post('/', (req: Request, res: Response) => {
 
 app.use(json());
 app.use(urlencoded({ extended: true }));
-
-app.use(
-	morgan(':method :url :status :res[content-length] - :response-time ms')
-);
 
 const PORT = process.env.PORT || 9000;
 
